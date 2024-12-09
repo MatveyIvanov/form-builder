@@ -1,0 +1,76 @@
+networks:
+  network:
+    name: ${PROJECT_NAME}-network
+
+volumes:
+  db-data:
+    name: ${PROJECT_NAME}-db-data
+
+services:
+  nginx:
+    container_name: ${PROJECT_NAME}-nginx
+    build:
+      context: ../
+      dockerfile: docker/nginx/Dockerfile
+      args:
+        NGINX_VERSION: ${NGINX_VERSION}
+    ports:
+      - ${NGINX_OUTER_PORT}:${NGINX_INNER_PORT}
+    volumes:
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+    depends_on:
+      - asgi
+    networks:
+      - network
+    restart: ${RESTART_POLICY:-unless-stopped}
+    cpus: ${NGINX_CPUS:-0.000}
+    mem_limit: ${NGINX_MEM_LIMIT:-1G}
+    mem_reservation: ${NGINX_MEM_RESERVATION:-500M}
+
+  db:
+    container_name: ${PROJECT_NAME}-db
+    image: mongo:${MONGO_VERSION}
+    volumes:
+      - db-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    networks:
+      - network
+    expose:
+      - ${DB_PORT}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    # healthcheck:
+    #   test: echo 'db.runCommand("ping").ok' | mongo mongo:$$DB_PORT/$$DB_NAME --quiet
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    cpus: ${DB_CPUS:-0.000}
+    mem_limit: ${DB_MEM_LIMIT:-1G}
+    mem_reservation: ${DB_MEM_RESERVATION:-500M}
+
+  asgi:
+    container_name: ${PROJECT_NAME}-asgi
+    build:
+      context: ../
+      dockerfile: docker/backend/Dockerfile
+      target: ${ASGI_TARGET}
+    env_file:
+      - .env
+    volumes:
+      - ${STATIC_PATH}:/static
+      - ${MEDIA_PATH}:/media
+      - ${LOG_PATH}:/logs
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    expose:
+      - ${ASGI_PORT}
+    networks:
+      - network
+    restart: ${RESTART_POLICY:-unless-stopped}
+    cpus: ${ASGI_CPUS:-0.000}
+    mem_limit: ${ASGI_MEM_LIMIT:-1G}
+    mem_reservation: ${ASGI_MEM_RESERVATION:-500M}
