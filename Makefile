@@ -8,8 +8,6 @@ developup:
 	docker compose -f docker/docker-compose.yml up --remove-orphans
 developbuild:
 	docker compose -f docker/docker-compose.yml build --no-cache
-test:
-	docker exec -it $(PROJECT_NAME)-asgi pytest .
 lint:
 	docker exec -it $(PROJECT_NAME)-asgi flake8 .
 typecheck:

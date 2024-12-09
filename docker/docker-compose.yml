@@ -37,16 +37,20 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
       MONGO_INITDB_DATABASE: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     networks:
       - network
     expose:
       - ${DB_PORT}
     restart: ${RESTART_POLICY:-unless-stopped}
-    # healthcheck:
-    #   test: echo 'db.runCommand("ping").ok' | mongo mongo:$$DB_PORT/$$DB_NAME --quiet
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/ --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 5
     cpus: ${DB_CPUS:-0.000}
     mem_limit: ${DB_MEM_LIMIT:-1G}
     mem_reservation: ${DB_MEM_RESERVATION:-500M}
