@@ -6,7 +6,7 @@ import time
 from typing import Dict
 
 from fastapi import Request, Response
-from starlette.types import Receive, Scope, Send
+from starlette.types import Scope
 
 from config.settings import PORT
 from utils.logging import EMPTY_VALUE, RequestJsonLogSchema

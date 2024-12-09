@@ -10,9 +10,9 @@ developbuild:
 	docker compose -f docker/docker-compose.yml build --no-cache
 test:
 	docker exec -it $(PROJECT_NAME)-asgi pytest .
-flake8:
+lint:
 	docker exec -it $(PROJECT_NAME)-asgi flake8 .
-mypy:
+typecheck:
 	docker exec -it $(PROJECT_NAME)-asgi mypy .
 black:
 	docker exec -it $(PROJECT_NAME)-asgi black .
