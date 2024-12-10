@@ -1,8 +1,15 @@
-from dependency_injector import containers
+from dependency_injector import containers, providers
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from config import settings
 
 
 class Container(containers.DeclarativeContainer):
-    pass
+    mongo = providers.Object(
+        AsyncIOMotorClient(
+            f"mongodb://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/"
+        )
+    )
 
 
 __container = Container()

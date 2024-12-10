@@ -31,6 +31,7 @@ services:
   db:
     container_name: ${PROJECT_NAME}-db
     image: mongo:${MONGO_VERSION}
+    command: mongod --quiet --logpath /dev/null
     volumes:
       - db-data:/data/db
     environment:
