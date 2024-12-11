@@ -1,41 +1,26 @@
-from typing import Tuple, Type, TypeVar
+from typing import Any, Iterable, Type, TypeVar
+
 from pydantic import TypeAdapter, ValidationError
 
-from schemas import types
+from services.interfaces import IValidateType
 
 
 T = TypeVar("T")
 
 
-def validate_date(value: str) -> bool:
-    for type in types.DATE_TYPES:
-        if _validate(value, type):
+def validate_value_by_types(
+    value: Any,
+    *,
+    types: Iterable[Type] = ...,
+    validate_type: IValidateType = ...,
+) -> bool:
+    for type in types:
+        if validate_type(value, type):
             return True
     return False
 
 
-def validate_phone(value: str) -> bool:
-    for type in types.PHONE_TYPES:
-        if _validate(value, type):
-            return True
-    return False
-
-
-def validate_email(value: str) -> bool:
-    for type in types.EMAIL_TYPES:
-        if _validate(value, type):
-            return True
-    return False
-
-
-def validate_text(value: str) -> bool:
-    for type in types.TEXT_TYPES:
-        if _validate(value, type):
-            return True
-    return False
-
-
-def _validate(value: T, type: Type) -> Tuple[bool, T]:
+def validate_type_with_pydantic(value: Any, type: Type) -> bool:
     try:
         TypeAdapter(type).validate_python(value)
         return True

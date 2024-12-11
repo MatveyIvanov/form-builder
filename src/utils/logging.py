@@ -182,7 +182,7 @@ def get_config(log_path: str) -> Dict:
     }
     handlers = {
         "uvicorn": {
-            "level": "ERROR",
+            "level": "DEBUG" if settings.DEBUG else "ERROR",
             "filename": os.path.join(log_path, "uvicorn.log"),
             "formatter": "json",
             **default_hanlder_settings,
@@ -235,7 +235,7 @@ def get_config(log_path: str) -> Dict:
 
     return {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": True,
         "formatters": {
             "json": {
                 "()": "utils.logging.JSONLogFormatter",

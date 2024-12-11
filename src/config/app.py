@@ -20,16 +20,16 @@ from utils.logging import get_config
 from utils.middleware import LoggingMiddleware
 
 container = get_di_container()
-container.wire(packages=["endpoints"])
+container.wire(packages=["endpoints", "services"])
 
 
-logging.config.dictConfig(  # type: ignore[attr-defined]
-    get_config(settings.LOGGING_PATH)
-)
+# logging.config.dictConfig(  # type: ignore[attr-defined]
+#     get_config(settings.LOGGING_PATH)
+# )
 
 
 __app = FastAPI(
-    debug=True,
+    debug=settings.DEBUG,
     exception_handlers={
         CustomException: custom_exception_handler,
         RequestValidationError: request_validation_exception_handler,
@@ -53,6 +53,7 @@ __app = VersionedFastAPI(
     prefix_format="/api/v{major}",
     default_version=(0, 0),
     enable_latest=True,
+    debug=settings.DEBUG,
 )
 __app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost"])
 
