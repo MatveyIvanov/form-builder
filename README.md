@@ -11,6 +11,7 @@
     * [Запуск в локальном окружении](#запуск-в-локальном-окружении)
     * [Запуск в тестовом окружении](#запуск-в-тестовом-окружении)
    * [После запуска](#после-запуска)
+* [Проверка работы](#проверка-работы)
 * [Запуск flake8](#запуск-flake8)
 * [Запуск mypy](#запуск-mypy)
 * [Разработка](#разработка)
@@ -107,6 +108,72 @@ make developup
 Проект станет доступен по порту \${NGINX_OUTER_PORT}<br>
 В локальном окружении достаточно перейти по адресу http://localhost:\${NGINX_OUTER_PORT}/<br>
 В другом окружении необходимо настроить домен, при обращении к которому веб-сервер (Nginx/Apache) будет проксировать все запросы на порт \${NGINX_OUTER_PORT}
+
+## Проверка работы
+В директории [src](./src) есть файл [forms.json](./src/forms.json), в котором описаны формы, загружаемые в БД при запуске сервиса.
+Актуальную схему документа формы в коллекции `forms` можно найти в файле [form.py](./src/schemas/form.py) (класс `FormMongo`).
+
+Запросы для тестирования формы `User Form`:
+* Полное совпадение по переданным параметрам (формат даты `YYYY-mm-dd`) - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?first_name=Test&last_name=Testov&email=email%40email.com&phone=%2B79062419744&birth_date=2024-01-01'
+    ```
+
+* Полное совпадение по переданным параметрам (формат даты `dd.mm.YYYY`) - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?first_name=Test&last_name=Testov&email=email%40email.com&phone=%2B79062419744&birth_date=01.01.2024'
+    ```
+
+* Полное совпадение с лишним полем `unknown` - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?first_name=Test&last_name=Testov&email=email%40email.com&phone=%2B79062419744&birth_date=01.01.2024&unknown=value'
+    ```
+
+* Полное совпадение по названию полей, но дата рождения не совпадает по типу - ожидается список полей с их типами
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?first_name=Test&last_name=Testov&email=email%40email.com&phone=%2B79062419744&birth_date=date'
+    ```
+
+* Полное совпадение по типам, но не хватает поля `email` - ожидается список полей с их типами
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?first_name=Test&last_name=Testov&phone=%2B79062419744&birth_date=01.01.2024'
+    ```
+
+Запросы для тестирования формы `Order Form`:
+* Полное совпадение по переданным параметрам (формат даты `YYYY-mm-dd`) - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?address=Test&ship_date=2024-01-01&agent_phone=%2B79062419744&agent_email=email%40email.com'
+    ```
+
+* Полное совпадение по переданным параметрам (формат даты `dd.mm.YYYY`) - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?address=Test&ship_date=01.01.2024&agent_phone=%2B79062419744&agent_email=email%40email.com'
+    ```
+
+* Полное совпадение с лишним полем `unknown` - ожидается название формы
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?address=Test&ship_date=2024-01-01&agent_phone=%2B79062419744&agent_email=email%40email.com&unknown=value'
+    ```
+
+* Полное совпадение по названию полей, но почта не совпадает по типу - ожидается список полей с их типами
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?address=Test&ship_date=2024-01-01&agent_phone=%2B79062419744&agent_email=email%40email'
+    ```
+
+* Полное совпадение по типам, но не хватает поля `agent_phone` - ожидается список полей с их типами
+
+    ```curl
+    curl --location --request POST 'http://localhost:8000/get_forms?address=Test&ship_date=2024-01-01&agent_email=email%40email.com'
+    ```
 
 ## Запуск Flake8
 

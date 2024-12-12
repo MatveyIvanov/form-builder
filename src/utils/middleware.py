@@ -67,7 +67,6 @@ class LoggingMiddleware:
         try:
             response = await call_next(request)
         except Exception as ex:
-            # print(str(ex))
             response_body = bytes(http.HTTPStatus.INTERNAL_SERVER_ERROR.phrase.encode())
             response = Response(
                 content=response_body,

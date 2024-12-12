@@ -7,7 +7,7 @@ from schemas.form import Form
 from services.interfaces import IBuildForm
 from utils.routing import APIRouter
 
-router = APIRouter(prefix="/forms", tags=["tags"])
+router = APIRouter(prefix="/forms", tags=["forms"])
 
 
 @router.post("/build/", response_model=Form)

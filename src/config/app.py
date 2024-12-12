@@ -90,9 +90,6 @@ async def load_forms():
         logging.error("Form fixtures not found.")
         return
 
-    await mongo.get_database(settings.DB_NAME).get_collection(
-        settings.MONGO_FORMS_COLLECTION
-    ).drop()
     validated_forms = []
     for form in forms["forms"]:
         try:
@@ -102,9 +99,6 @@ async def load_forms():
 
         validated_forms.append(form)
 
-    await mongo.get_database(settings.DB_NAME).get_collection(
-        settings.MONGO_FORMS_COLLECTION
-    ).drop()
     await mongo.get_database(settings.DB_NAME).get_collection(
         settings.MONGO_FORMS_COLLECTION
     ).insert_many(validated_forms)
