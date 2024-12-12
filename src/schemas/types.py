@@ -1,6 +1,6 @@
 import re
-from enum import StrEnum
 from datetime import date
+from enum import StrEnum
 from typing import TYPE_CHECKING, Annotated, Dict, TypeAlias
 
 from pydantic import EmailStr, StringConstraints

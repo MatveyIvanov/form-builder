@@ -2,8 +2,8 @@ from typing import Any, Dict, Iterable, Protocol, Type
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from schemas.types import FormFieldType, FormFieldMapping
 from schemas.form import Form
+from schemas.types import FormFieldMapping, FormFieldType
 
 
 class IValidateType(Protocol):

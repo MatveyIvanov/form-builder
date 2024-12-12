@@ -4,7 +4,6 @@ from pydantic import TypeAdapter, ValidationError
 
 from services.interfaces import IValidateType
 
-
 T = TypeVar("T")
 
 

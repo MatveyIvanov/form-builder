@@ -2,10 +2,10 @@ from typing import Dict, List
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from schemas.types import FormFieldMapping
 from config import settings
 from schemas.form import Form, FormMongoDict
 from schemas.parse import ParsedFormField
+from schemas.types import FormFieldMapping
 from services.interfaces import IParseType
 
 

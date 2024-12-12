@@ -1,6 +1,6 @@
+from dependency_injector.wiring import Provide, inject
 from fastapi import Depends, Request
 from fastapi_versioning import version
-from dependency_injector.wiring import Provide, inject
 
 from config.di import Container
 from schemas.form import Form
