@@ -7,9 +7,11 @@ from services.interfaces import IValidateValue
 def parse_type(
     value: str,
     *,
-    priority: Iterable[FormFieldType] = ...,
-    type_to_validator: Dict[FormFieldType, IValidateValue] = ...,
-    fallback_type: FormFieldType = ...,
+    priority: Iterable[FormFieldType] = ...,  # type:ignore[assignment]
+    type_to_validator: Dict[
+        FormFieldType, IValidateValue
+    ] = ...,  # type:ignore[assignment]
+    fallback_type: FormFieldType = ...,  # type:ignore[assignment]
 ) -> FormFieldType:
     for field_type in priority:
         try:

@@ -16,9 +16,6 @@ services:
         NGINX_VERSION: ${NGINX_VERSION}
     ports:
       - ${NGINX_OUTER_PORT}:${NGINX_INNER_PORT}
-    volumes:
-      - ${STATIC_PATH}:/static
-      - ${MEDIA_PATH}:/media
     depends_on:
       - asgi
     networks:
@@ -64,10 +61,6 @@ services:
       target: ${ASGI_TARGET}
     env_file:
       - .env
-    volumes:
-      - ${STATIC_PATH}:/static
-      - ${MEDIA_PATH}:/media
-      - ${LOG_PATH}:/logs
     depends_on:
       db:
         condition: service_healthy

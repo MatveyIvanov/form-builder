@@ -11,8 +11,8 @@ T = TypeVar("T")
 def validate_value_by_types(
     value: Any,
     *,
-    types: Iterable[Type] = ...,
-    validate_type: IValidateType = ...,
+    types: Iterable[Type] = ...,  # type:ignore[assignment]
+    validate_type: IValidateType = ...,  # type:ignore[assignment]
 ) -> bool:
     for type in types:
         if validate_type(value, type):
@@ -24,5 +24,5 @@ def validate_type_with_pydantic(value: Any, type: Type) -> bool:
     try:
         TypeAdapter(type).validate_python(value)
         return True
-    except ValidationError as e:
+    except ValidationError:
         return False

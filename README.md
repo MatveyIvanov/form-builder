@@ -12,11 +12,7 @@
     * [Запуск в тестовом окружении](#запуск-в-тестовом-окружении)
    * [После запуска](#после-запуска)
 * [Запуск flake8](#запуск-flake8)
-    * [Внутри Docker-контейнера (рекомендуется)](#внутри-docker-контейнера-рекомендуется-1)
-    * [Вне Docker-контейнера](#вне-docker-контейнера-1)
 * [Запуск mypy](#запуск-mypy)
-    * [Внутри Docker-контейнера (рекомендуется)](#внутри-docker-контейнера-рекомендуется-2)
-    * [Вне Docker-контейнера](#вне-docker-контейнера-2)
 * [Разработка](#разработка)
     * [Форматирование кода](#форматирование-кода)
     * [Git хуки](#git-хуки)
@@ -35,32 +31,14 @@
 <summary><b>Подробное описание переменных окружения</b></summary>
 <p>
 
-#### ENVIRONMENT
-Окружение (development, production, testing, etc). Может быть использовано для различных нужд в рамках проекта
 #### PROJECT_NAME
 Название проекта
-#### SECRET_KEY
-Секретный ключ для FastAPI
 #### DEBUG
 Режим отладки<br>
 0 - выключен<br>
 1 - включен<br>
 Если включен, то:
 * 500 ошибки сервера не будут обработаны обработчиком исключений
-#### PROD
-Режим прод окружения<br>
-0 - выключен<br>
-1 - включен<br>
-#### MEDIA_PATH
-Путь к директории, в которой хранятся медиа-файлы
-#### MEDIA_URL
-Префикс в ссылке для медиа-файлов
-#### STATIC_PATH
-Путь к директории, в которой хранятся статические файлы
-#### STATIC_URL
-Префикс в ссылке для статических-файлов
-#### LOG_PATH
-Путь к директории, в которой хранятся лог-файлы
 #### Database
 Доступы к БД
 #### Nginx
@@ -85,82 +63,62 @@ ASGI_TARGET - образ для сборки asgi сервиса<br>
 </p>
 </details>
 
-### Запуск в локальном окружении
-```bash
-docker compose -f docker/docker-compose.yml -f docker/docker-compose.local.yml up
+Пример локального окружения для проверки работы:
+```ini
+# FastAPI project
+PROJECT_NAME=formbuilder
+DEBUG=1
+
+# Database
+DB_NAME=formbuilder
+DB_USER=formbuilder
+DB_PASSWORD=password
+DB_HOST=db
+DB_PORT=27017
+
+# Nginx
+NGINX_OUTER_PORT=8000
+NGINX_INNER_PORT=5000
+
+# ASGI
+ASGI_PORT=8000
+
+# Logging
+LOGGING_MAX_BYTES=1024
+LOGGING_BACKUP_COUNT=0
+
+# Docker Compose Specific
+RESTART_POLICY=unless-stopped
+NGINX_VERSION=1.27.1-alpine
+MONGO_VERSION=8.0.3
+ASGI_TARGET=dev-asgi
+
 ```
-или
+
+### Запуск в локальном окружении
 ```bash
 make localup
 ```
-После запуска проект будет доступен по адресу http://localhost:${NGINX_OUTER_PORT}/
 ### Запуск в тестовом окружении
 ```bash
-docker compose up
-```
-или
-```bash
-make up
+make developup
 ```
 ### После запуска
-Проект станет доступен по порту ${NGINX_OUTER_PORT}<br>
-В локальном окружении достаточно перейти по адресу http://localhost:${NGINX_OUTER_PORT}/<br>
-В другом окружении необходимо настроить домен, при обращении к которому веб-сервер (Nginx/Apache) будет проксировать все запросы на порт ${NGINX_OUTER_PORT}
+Проект станет доступен по порту \${NGINX_OUTER_PORT}<br>
+В локальном окружении достаточно перейти по адресу http://localhost:\${NGINX_OUTER_PORT}/<br>
+В другом окружении необходимо настроить домен, при обращении к которому веб-сервер (Nginx/Apache) будет проксировать все запросы на порт \${NGINX_OUTER_PORT}
 
 ## Запуск Flake8
-### Внутри Docker-контейнера (рекомендуется)
 
-1. Зайти в контейнер `asgi` через команду
-
-    ```bash
-    docker exec -it ${PROJECT_NAME}-asgi bash
-    ```
-2. Начать выполнение flake8 через команду
-    ```bash
-    flake8 .
-    ```
-
-или
 ```bash
 make lint
 ```
 
-### Вне Docker-контейнера
-
-1. Перейти в директорию с [конфигурационным файлом](./src/.flake8)
-2. Начать выполнение flake8 через команду
-
-    ```bash
-    poetry run flake8 .
-    ```
-
 ## Запуск mypy
-### Внутри Docker-контейнера (рекомендуется)
 
-1. Зайти в контейнер `asgi` через команду
-
-    ```bash
-    docker exec -it ${PROJECT_NAME}-asgi bash
-    ```
-2. Начать выполнение mypy через команду
-    ```bash
-    mypy .
-    ```
-
-или
 ```bash
 make typecheck
 ```
-
-### Вне Docker-контейнера
-
-При возникновении ошибок запуск возможен только внутри Docker-контейнера
-1. Перейти в директорию с [конфигурационным файлом](./src/pyproject.toml)
-2. Начать выполнение mypy через команду
-
-    ```bash
-    poetry run mypy .
-    ```
 
 ## Разработка
 ### Форматирование кода
@@ -174,32 +132,6 @@ make typecheck
     }
 }
 ```
-
-### Git хуки
-При разработке рекомендуется использовать [pre-commit](https://pre-commit.com/), чтобы перед формированием МР код был уже подготовленным и поверхностно проверенным (например, через `flake8`)<br><br>
-**Для использования должны быть установлены dev-зависимости**
-
-#### Pre-commit хуки
-Установка
-```bash
-poetry run pre-commit install
-```
-Удаление
-```bash
-poetry run pre-commit uninstall
-```
-После установки, при каждом коммите будут отрабатывать хуки из [конфигурационного файла](./src/.pre-commit-config.yaml), предназначенные для коммитов (`stages: [commit]`)
-
-#### Pre-push хуки
-Установка
-```bash
-poetry run pre-commit install --hook-type pre-push
-```
-Удаление
-```bash
-poetry run pre-commit uninstall -t pre-push
-```
-После установки, при каждом пуше будут отрабатывать хуки из [конфигурационного файла](./src/.pre-commit-config.yaml), предназначенные для пушей (`stages: [push]`)
 
 ### Git хуки
 При разработке рекомендуется использовать [pre-commit](https://pre-commit.com/), чтобы перед формированием МР код был уже подготовленным и поверхностно проверенным (например, через `flake8`)<br><br>

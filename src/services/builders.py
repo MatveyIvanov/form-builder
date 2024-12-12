@@ -12,8 +12,8 @@ from services.interfaces import IParseType
 async def get_or_build_form(
     fields: FormFieldMapping,
     *,
-    mongo: AsyncIOMotorClient = ...,
-    parse_type: IParseType = ...,
+    mongo: AsyncIOMotorClient = ...,  # type:ignore[assignment]
+    parse_type: IParseType = ...,  # type:ignore[assignment]
 ) -> Form:
     parsed: Dict[str, ParsedFormField] = {}
     for name, value in fields.items():

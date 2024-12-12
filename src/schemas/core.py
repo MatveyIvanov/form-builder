@@ -7,7 +7,7 @@ from schemas.types import FormFieldType
 DEFAULT_MONGO_FIELDS: Set[str] = {"_id"}
 
 
-class _MongoModel(BaseModel, extra="allow"):
+class _MongoModel(BaseModel, extra="allow"):  # type:ignore[call-arg]
     @property
     def fields(self) -> Set[str]:
         return set(self.model_fields)

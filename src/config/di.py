@@ -9,7 +9,7 @@ from services import builders, parsers, validators
 class Container(containers.DeclarativeContainer):
     mongo = providers.Object(
         AsyncIOMotorClient(
-            f"mongodb://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/"
+            f"mongodb://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/"  # noqa:E501
         )
     )
 
