@@ -17,8 +17,4 @@ async def build(
     request: Request,
     build: IBuildForm = Depends(Provide[Container.get_or_build_form.provider]),
 ) -> Form:
-    try:
-        return await build(fields=dict(request.query_params))
-    except Exception as e:
-        print(str(e))
-        return Form(name="")
+    return await build(fields=dict(request.query_params))

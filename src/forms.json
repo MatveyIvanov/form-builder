@@ -1,0 +1,50 @@
+{
+    "forms": [
+        {
+            "name": "User Form",
+            "fields": [
+                {
+                    "name": "first_name",
+                    "value": "text"
+                },
+                {
+                    "name": "last_name",
+                    "value": "text"
+                },
+                {
+                    "name": "email",
+                    "value": "email"
+                },
+                {
+                    "name": "phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "birth_date",
+                    "value": "date"
+                }
+            ]
+        },
+        {
+            "name": "Order Form",
+            "fields": [
+                {
+                    "name": "address",
+                    "value": "text"
+                },
+                {
+                    "name": "ship_date",
+                    "value": "date"
+                },
+                {
+                    "name": "agent_phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "agent_email",
+                    "value": "email"
+                }
+            ]
+        }
+    ]
+}

@@ -16,6 +16,7 @@ concurrent-log-handler = "0.9.25"
 motor = "3.6.0"
 pydantic-extra-types = "2.10.1"
 phonenumbers = "8.13.51"
+aiofiles = "24.1.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.10.0"
